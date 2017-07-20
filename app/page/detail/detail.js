@@ -7,9 +7,10 @@ import {
     Dimensions,
     ScrollView,
     WebView,
-    Linking,
+    Modal,
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 import api from '../../api';
 import util from '../../util';
@@ -28,6 +29,8 @@ export default class newsDetail extends Component {
        this.state = {
          isLoading: true,
          info: null,
+         modalShow: false,
+         images: [],
        }
     }
     componentDidMount() {
@@ -61,7 +64,18 @@ export default class newsDetail extends Component {
                              };
                              window.postMessage(JSON.stringify(params));
                           });
-                      }`;
+                      }
+                      var imgs = document.querySelectorAll('img.content-image');
+                      for(var i =0 ; i < imgs.length; i++) {
+                          imgs[i].addEventListener('click', function (event) {
+                              var params = {
+                                  type: 'openImg',
+                                  src: event.currentTarget.getAttribute('src'),
+                              };
+                              window.postMessage(JSON.stringify(params));
+                          })
+                      }
+                      `;
 
         if (this.webview) {
             this.webview.injectJavaScript(script);
@@ -71,8 +85,25 @@ export default class newsDetail extends Component {
     onNavigationStateChange(data) {
         console.log(data)
     }
-    onMessage(event) {
+    onMessage = (event) => {
+        let params = JSON.parse(event.nativeEvent.data);
+        if(params.type == 'openImg') {
+            var imgs = [];
+            imgs.push({url: params.src});
+
+            this.setState({
+                modalShow: true,
+                images:imgs
+            });
+
+            return true;
+        }
+
         util.onMessage(event);
+    }
+
+    setModalVisible(visible) {
+        this.setState({modalShow: visible});
     }
 
     render() {
@@ -88,12 +119,12 @@ export default class newsDetail extends Component {
                       + '</body></html>';
 
             content = <View style={[styles.background, styles.wrapper]}>
-                          <WebView source={{html: html}}
+                            <WebView source={{html: html}}
                                    style={styles.body}
                                    onMessage={this.onMessage}
                                    ref={(webview) => {this.webview = webview}}
                                    onLoadEnd={this.injectJs}/>
-                          <View style={styles.headerWrap}>
+                            <View style={styles.headerWrap}>
                                 <Image source={{uri: this.state.info.image}} style={[styles.image]}>
                                     <View style={styles.imageTitleWrap}>
                                       <Text style={styles.imageTitle}>
@@ -104,7 +135,10 @@ export default class newsDetail extends Component {
                                 <View style={styles.titleWrap}>
                                     <Text style={styles.title}>{this.state.info.title}</Text>
                                 </View>
-                           </View>
+                            </View>
+                            <Modal visible={this.state.modalShow} transparent={true}>
+                                <ImageViewer imageUrls={this.state.images} onClick={() => { this.setModalVisible(false) }}/>
+                            </Modal>
                       </View>
         } else {
             content = <View style={[styles.wrapper, styles.loading]}>
