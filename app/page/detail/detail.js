@@ -23,6 +23,7 @@ export default class newsDetail extends Component {
     static navigationOptions = {
         title: '详情',
     };
+
     constructor(props){
        super(props)
 
@@ -33,6 +34,7 @@ export default class newsDetail extends Component {
          images: [],
        }
     }
+
     componentDidMount() {
         this.fetchDetail()
     }
@@ -85,6 +87,7 @@ export default class newsDetail extends Component {
     onNavigationStateChange(data) {
         console.log(data)
     }
+
     onMessage = (event) => {
         let params = JSON.parse(event.nativeEvent.data);
         if(params.type == 'openImg') {
@@ -106,6 +109,10 @@ export default class newsDetail extends Component {
         this.setState({modalShow: visible});
     }
 
+    onWebViewScroll () {
+        alert('aaa')
+    }
+
     render() {
         let content = '';
         if (this.state.isLoading) {
@@ -123,7 +130,7 @@ export default class newsDetail extends Component {
                                    style={styles.body}
                                    onMessage={this.onMessage}
                                    ref={(webview) => {this.webview = webview}}
-                                   onLoadEnd={this.injectJs}/>
+                                   onLoadEnd={this.injectJs} />
                             <View style={styles.headerWrap}>
                                 <Image source={{uri: this.state.info.image}} style={[styles.image]}>
                                     <View style={styles.imageTitleWrap}>
@@ -136,8 +143,11 @@ export default class newsDetail extends Component {
                                     <Text style={styles.title}>{this.state.info.title}</Text>
                                 </View>
                             </View>
-                            <Modal visible={this.state.modalShow} transparent={true}>
-                                <ImageViewer imageUrls={this.state.images} onClick={() => { this.setModalVisible(false) }}/>
+                            <Modal visible={this.state.modalShow}
+                                   transparent={true}
+                                   onRequestClose={() => {}}>
+                                <ImageViewer imageUrls={this.state.images}
+                                             onClick={() => { this.setModalVisible(false) }}/>
                             </Modal>
                       </View>
         } else {

@@ -7,6 +7,7 @@ import {
     Dimensions,
     ScrollView,
     FlatList,
+    TouchableOpacity,
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 import Swiper from 'react-native-swiper';
@@ -76,10 +77,12 @@ export default class home extends Component {
                             {
                                 this.state.imageList.map((item, i) =>
                                     <View style={[styles.wrapper]} key={i}>
-                                        <Image source={{uri: item.image}} style={[styles.image]} />
-                                        <View style={styles.titleWrap}>
-                                            <Text style={styles.title}>{item.title}</Text>
-                                        </View>
+                                        <TouchableOpacity onPress={() => {this.goDetail(item)}} activeOpacity={1}>
+                                            <Image source={{uri: item.image}} style={[styles.image]} />
+                                            <View style={styles.titleWrap}>
+                                                <Text style={styles.title}>{item.title}</Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
                                 )
                             }
