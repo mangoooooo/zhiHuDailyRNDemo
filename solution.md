@@ -25,3 +25,14 @@
         或
         let text = '\ue901';
         <Text style={{fontFamily: 'icomoon'}}>{text}</Text>
+
+    或者使用react-native-vector-icons这个库
+
+#6. react-navigation 给按钮添加事件
+    1. 会遇到state.params 为undefined的情况，解决：
+        if(!state.params){
+            state.params = {};
+        }
+    2.给header的按钮 onPress={state.params.viewMessage}     //  不能写成viewMessage()
+    3.在组件生命周期中的mount钩子函数中绑定函数：、
+        setParams({viewMessage: this.viewMessage});
