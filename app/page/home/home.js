@@ -18,7 +18,7 @@ const {width} = Dimensions.get('window');
 
 export default class home extends Component {
     static navigationOptions = {
-        title: '首页测试',
+        title: '首页',
     };
 
     constructor(props){

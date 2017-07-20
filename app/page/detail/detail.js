@@ -7,10 +7,12 @@ import {
     Dimensions,
     ScrollView,
     WebView,
+    Linking,
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 
 import api from '../../api';
+import util from '../../util';
 
 const {width} = Dimensions.get('window');
 
@@ -70,8 +72,7 @@ export default class newsDetail extends Component {
         console.log(data)
     }
     onMessage(event) {
-        let params = JSON.parse(event.nativeEvent.data);
-        alert(params.type)
+        util.onMessage(event);
     }
 
     render() {
