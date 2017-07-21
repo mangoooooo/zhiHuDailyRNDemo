@@ -12,8 +12,8 @@ export default class Drawer extends Component {
     }
 
     goTheme(item) {
-//        const { navigate } = this.props.navigation;
-//        navigate('NewsDetail', { id: item.id })
+        const { navigate } = this.props.navigation;
+        navigate('NewsDetail', { id: item.id })
     }
 
     render() {
