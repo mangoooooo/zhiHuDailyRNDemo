@@ -96,7 +96,7 @@ export default class home extends Component {
     }
 
     openMenu = () => {
-        alert('open')
+        this.props.navigation.navigate('DrawerOpen')
     }
 
     viewMessage = () => {
