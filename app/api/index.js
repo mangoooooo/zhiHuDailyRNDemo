@@ -1,14 +1,17 @@
 const api = {};
 
 const request = ({url, params, type}) => {
-    return fetch(url)
+    return new Promise((resolve, reject) => {
+        fetch(url)
            .then((response) => response.json())
            .then((responseJson) => {
-               return responseJson;
+               resolve(responseJson);
+               // todo: 根据项目情况添加成功、失败判断
            })
            .catch((error) => {
-               console.error(error);
+               reject(error);
            });
+    })
 }
 
 api.getHomeLatest = () => {
