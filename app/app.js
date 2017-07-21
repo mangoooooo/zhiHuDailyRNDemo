@@ -3,35 +3,7 @@ import {StackNavigator, DrawerNavigator} from 'react-navigation';
 
 import home from './page/home/home.js';
 import newsDetail from './page/detail/detail.js';
-import DrawerList from './component/drawerList.js';
-
-class Drawer extends Component {
-
-    constructor(props){
-       super(props)
-
-       this.state = {
-         isLoading: true,
-       }
-    }
-
-    _renderNavigationView() {
-        return (
-          <DrawerList onTap={(item) => {this.goTheme(item)}}/>
-        );
-    }
-
-    goTheme(item) {
-//        const { navigate } = this.props.navigation;
-//        navigate('NewsDetail', { id: item.id })
-    }
-
-    render() {
-        return (
-            <DrawerList onTap={(item) => {this.goTheme(item)}}/>
-        );
-    }
-}
+import Drawer from './component/drawer.js';
 
 const App = StackNavigator({
     Home: {screen: home},
