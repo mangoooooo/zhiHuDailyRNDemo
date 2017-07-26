@@ -29,6 +29,7 @@ export default class home extends Component {
         }
 
         const headerTitle = state.params.theme && state.params.theme.name || '首页';      //  动态修改title
+        const themeId     = state.params.theme && state.params.theme.id || 0;
 
         return {
             title: headerTitle,
@@ -39,17 +40,20 @@ export default class home extends Component {
             ),
             headerStyle: {backgroundColor: '#00a2ed',},
             headerTitleStyle : {color: '#ffffff'},
-            headerRight: (
-                <View style={{flexDirection: 'row'}}>
+            headerRight: themeId == 0 ?
+                (<View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={state.params.viewMessage} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xe96d;</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xeaa3;</Text>
                     </TouchableOpacity>
-                </View>
-
-            )
+                </View>) :
+                (<View style={{flexDirection: 'row'}}>
+                     <TouchableOpacity onPress={state.params.followTheme} activeOpacity={1}>
+                         <Text style={styles.icomoon}>&#xe96d;</Text>
+                     </TouchableOpacity>
+                </View>)
         };
     };
 
@@ -74,6 +78,7 @@ export default class home extends Component {
             viewMessage: this.viewMessage,
             viewMore: this.viewMore,
             openMenu: this.openMenu,
+            followTheme: this.followTheme,
         });
     }
     componentDidMount() {
@@ -162,6 +167,10 @@ export default class home extends Component {
 
     viewMore = () => {
         alert('more');
+    }
+
+    followTheme = () => {
+        alert('follow');
     }
 
     render() {

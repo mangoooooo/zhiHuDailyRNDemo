@@ -131,18 +131,22 @@ export default class newsDetail extends Component {
                                    onMessage={this.onMessage}
                                    ref={(webview) => {this.webview = webview}}
                                    onLoadEnd={this.injectJs} />
-                            <View style={styles.headerWrap}>
-                                <Image source={{uri: this.state.info.image}} style={[styles.image]}>
-                                    <View style={styles.imageTitleWrap}>
-                                      <Text style={styles.imageTitle}>
-                                        {this.state.info.image_source}
-                                      </Text>
-                                    </View>
-                                </Image>
-                                <View style={styles.titleWrap}>
-                                    <Text style={styles.title}>{this.state.info.title}</Text>
-                                </View>
-                            </View>
+                            {
+                                this.state.info.image?
+                                   (<View style={styles.headerWrap}>
+                                       <Image source={{uri: this.state.info.image}} style={[styles.image]}>
+                                           <View style={styles.imageTitleWrap}>
+                                             <Text style={styles.imageTitle}>
+                                               {this.state.info.image_source}
+                                             </Text>
+                                           </View>
+                                       </Image>
+                                       <View style={styles.titleWrap}>
+                                           <Text style={styles.title}>{this.state.info.title}</Text>
+                                       </View>
+                                   </View>) : (<Text></Text>)
+                            }
+
                             <Modal visible={this.state.modalShow}
                                    transparent={true}
                                    onRequestClose={() => {}}>
