@@ -60,6 +60,7 @@ export default class home extends Component {
          isLoading: false,
          items: [],
          imageList: [],
+         themeInfo: null,
          currentTheme: {
             id: 0,
             name: '首页'
@@ -122,7 +123,6 @@ export default class home extends Component {
 
         if (theme.id == 0) {    //  首页
             api.getHomeLatest().then(data => {
-                console.log(data)
                 this.setState({
                     isLoading: false,
                     imageList: data.top_stories || [],
@@ -131,10 +131,10 @@ export default class home extends Component {
             });
         } else {    //  主题
             api.getThemeDetail(theme.id).then(data => {
-                console.log(data.stories)
                 this.setState({
                     isLoading: false,
                     items: data.stories || [],
+                    themeInfo: data
                 })
             }, err => {
                 alert('加载失败！')
@@ -168,7 +168,7 @@ export default class home extends Component {
         let content = this.state.isLoading ?
             (<View style={[styles.wrapper, styles.loading]}>
                 <Text>正在加载...</Text>
-            </View>) :
+            </View>) : this.state.currentTheme.id == 0 ?
             (<View style={[styles.background, styles.wrapper]}>
                 <ScrollView>
                     <Swiper style={[styles.swiper]}
@@ -194,6 +194,29 @@ export default class home extends Component {
                             }
                     </Swiper>
                     <Text style={[styles.grouptitle]}>今日热闻</Text>
+                    <FlatList
+                      data={this.state.items}
+                      renderItem={this._renderItem}
+                    />
+                </ScrollView>
+            </View>) :
+            (<View style={[styles.background, styles.wrapper]}>
+                <ScrollView>
+                    <View style={[{height: 0.65 * width, width: width, position: 'relative'}]}>
+                        <Image source={{uri: this.state.themeInfo.background}} style={[styles.image]} />
+                        <View style={styles.titleWrap}>
+                            <Text style={styles.title}>{this.state.themeInfo.description}</Text>
+                        </View>
+                    </View>
+                    <View style={{flexDirection: 'row', padding: 15, alignItems: 'center'}}>
+                        <Text>主编</Text>
+                        {
+                            this.state.themeInfo.editors.map(item =>
+                                <Image source={{uri: item.avatar}} style={[styles.avatar]} />
+                            )
+                        }
+                    </View>
+
                     <FlatList
                       data={this.state.items}
                       renderItem={this._renderItem}
@@ -265,5 +288,12 @@ const styles = StyleSheet.create({
 
     grouptitle: {
         padding: 15
-    }
+    },
+
+    avatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 30,
+        marginLeft: 15
+    },
 })

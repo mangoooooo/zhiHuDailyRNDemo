@@ -18,6 +18,7 @@ export default class Drawer extends Component {
     goTheme(item) {
         const { navigate } = this.props.navigation;
         DeviceEventEmitter.emit('Drawer', item);
+//        navigate('Home', { id: item.id, name: item.name })
     }
 
     render() {
