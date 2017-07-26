@@ -4,14 +4,16 @@ import {StackNavigator, DrawerNavigator} from 'react-navigation';
 import home from './page/home/home.js';
 import newsDetail from './page/detail/detail.js';
 import Drawer from './component/drawer.js';
+import Favorite from './page/favorite/favorite.js'
 
 const App = StackNavigator({
     Home: {screen: home},
-    NewsDetail: {screen: newsDetail}
+    NewsDetail: {screen: newsDetail},
+    Favorite: {screen: Favorite}
 })
 
 const RootApp = DrawerNavigator({
-    Root: {screen: App,},
+    Root: {screen: App},
 },{
     drawerWidth: 300, // 抽屉宽
     drawerPosition: 'left', // 抽屉在左边还是右边

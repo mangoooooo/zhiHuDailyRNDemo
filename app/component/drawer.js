@@ -15,15 +15,18 @@ export default class Drawer extends Component {
        }
     }
 
-    goTheme(item) {
+    goSomewhere(type, item) {
         const { navigate } = this.props.navigation;
-        DeviceEventEmitter.emit('Drawer', item);
-//        navigate('Home', { id: item.id, name: item.name })
+        if (type == 'theme') {
+            DeviceEventEmitter.emit('Drawer', item);
+        } else {
+            navigate('Favorite')
+        }
     }
 
     render() {
         return (
-            <DrawerList onTap={(item) => {this.goTheme(item)}}/>
+            <DrawerList onTap={(type, item) => {this.goSomewhere(type, item)}}/>
         );
     }
 }

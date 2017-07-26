@@ -145,9 +145,8 @@ export default class home extends Component {
                 alert('加载失败！')
             })
         }
-
-
     }
+
     goDetail = (item) => {
         const { navigate } = this.props.navigation;
         navigate('NewsDetail', { id: item.id })

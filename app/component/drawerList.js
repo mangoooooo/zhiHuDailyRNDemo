@@ -53,7 +53,11 @@ export default class DrawerList extends Component {
     }
 
     selectTheme(item) {
-        this.props.onTap(item);
+        this.props.onTap('theme', item);
+    }
+
+    goSomewhere(nav) {
+        this.props.onTap('other', nav);
     }
 
     render() {
@@ -69,10 +73,12 @@ export default class DrawerList extends Component {
                         <Text style={[styles.whiteText,styles.username]}>哩哩蒋</Text>
                     </View>
                     <View style={styles.headerFooter}>
-                        <View style={styles.footerItem}>
-                            <Text style={styles.icomoon}>&#xe9d9;</Text>
-                            <Text style={styles.whiteText}>我的收藏</Text>
-                        </View>
+                        <TouchableElement onPress={() => this.goSomewhere('Favorite')}>
+                            <View style={styles.footerItem}>
+                                <Text style={styles.icomoon}>&#xe9d9;</Text>
+                                <Text style={styles.whiteText}>我的收藏</Text>
+                            </View>
+                        </TouchableElement>
                         <View style={styles.footerItem}>
                             <Text style={styles.icomoon}>&#xe9c7;</Text>
                             <Text style={styles.whiteText}>离线下载</Text>
