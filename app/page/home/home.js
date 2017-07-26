@@ -8,7 +8,8 @@ import {
     ScrollView,
     FlatList,
     TouchableOpacity,
-    Button
+    Button,
+    DeviceEventEmitter
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 import Swiper from 'react-native-swiper';
@@ -26,7 +27,8 @@ export default class home extends Component {
         if(!state.params){
             state.params = {};
         }
-        const headerTitle = state.params.name || '首页';      //  动态修改title
+
+        const headerTitle = state.params.theme && state.params.theme.name || '首页';      //  动态修改title
 
         return {
             title: headerTitle,
@@ -58,6 +60,10 @@ export default class home extends Component {
          isLoading: false,
          items: [],
          imageList: [],
+         currentTheme: {
+            id: 0,
+            name: '首页'
+         },
        }
     }
     componentWillMount() {
@@ -70,21 +76,72 @@ export default class home extends Component {
         });
     }
     componentDidMount() {
-        this.fetchList()
+        this.msgListener = DeviceEventEmitter.addListener('Drawer',(item) => {
+                                this.selectTheme(item)
+                           });
+
+        this.fetchList(this.state.currentTheme)
+    }
+    componentWillUpdate(nextProps, nextState) {
+        console.log('componentWillUpdate')
+    }
+    componentDidUpdate(prevProps, prevState) {
+        console.log('componentDidUpdate')
+    }
+    componentWillUnmount() {
+        console.log('componentWillUnmount')
+        this.msgListener && this.msgListener.remove();
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps')
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log('shouldComponentUpdate')
+        return true
     }
 
-    fetchList() {
+    selectTheme(item) {
         this.setState({
-            isLoading: true,
+            currentTheme: item,
         })
 
-        api.getHomeLatest().then(data => {
-            this.setState({
-                isLoading: false,
-                imageList: data.top_stories || [],
-                items: data.stories || [],
-            })
+        const { setParams, state } = this.props.navigation;
+        setParams({
+            name: item.name,
+            theme: item
         });
+
+        this.fetchList(item)
+    }
+
+    fetchList(theme) {
+        this.setState({
+            isLoading: true,
+            items: []
+        })
+
+        if (theme.id == 0) {    //  首页
+            api.getHomeLatest().then(data => {
+                console.log(data)
+                this.setState({
+                    isLoading: false,
+                    imageList: data.top_stories || [],
+                    items: data.stories || [],
+                })
+            });
+        } else {    //  主题
+            api.getThemeDetail(theme.id).then(data => {
+                console.log(data.stories)
+                this.setState({
+                    isLoading: false,
+                    items: data.stories || [],
+                })
+            }, err => {
+                alert('加载失败！')
+            })
+        }
+
+
     }
     goDetail = (item) => {
         const { navigate } = this.props.navigation;

@@ -36,3 +36,8 @@
     2.给header的按钮 onPress={state.params.viewMessage}     //  不能写成viewMessage()
     3.在组件生命周期中的mount钩子函数中绑定函数：、
         setParams({viewMessage: this.viewMessage});
+
+#7. 兄弟组件间通信
+    组件A: DeviceEventEmitter.emit(actionName, data);
+    组件B: componentDidMount中：this.msgListener = DeviceEventEmitter.addListener(actionName, (data) => {})
+           componentWillUnmount中：this.msgListener && this.msgListener.remove();

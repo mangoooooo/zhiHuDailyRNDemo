@@ -25,7 +25,7 @@ export default class newsItem extends Component {
         if (this.props.item.multipic) {
             tips = <View style={styles.tipsWrap}><Text style={styles.tips}>多图</Text></View>
         }
-        if (this.props.item.images.length) {
+        if (this.props.item.images && this.props.item.images.length) {
             image = <View style={styles.imageWrap}>
                         <Image source={{uri: this.props.item.images[0]}} style={styles.itemImage} />
                         {tips}

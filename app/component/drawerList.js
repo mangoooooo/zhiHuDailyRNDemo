@@ -36,14 +36,14 @@ export default class DrawerList extends Component {
         })
     }
 
-    _renderItem(item) {
+    _renderItem(item, index) {
         let TouchableElement = TouchableHighlight;
         if (Platform.OS === 'android') {
           TouchableElement = TouchableNativeFeedback;
         }
 
         return (
-            <TouchableElement onPress={() => this.selectTheme(item)}>
+            <TouchableElement onPress={() => this.selectTheme(item)} key={index}>
                 <View style={[styles.itemWrap, styles.itemWrap2]}>
                     <Text style={styles.itemText}>{item.name}</Text>
                     <Text style={[styles.icomoon, styles.iconAdd]}>&#xea0a;</Text>
@@ -86,8 +86,8 @@ export default class DrawerList extends Component {
                     </View>
                 </TouchableElement>
                 {
-                    this.state.items.map(item =>
-                        this._renderItem(item)
+                    this.state.items.map((item, index) =>
+                        this._renderItem(item, index)
                     )
                 }
             </ScrollView>

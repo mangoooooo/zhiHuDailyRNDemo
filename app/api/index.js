@@ -32,4 +32,10 @@ api.getThemeList = () => {
     });
 }
 
+api.getThemeDetail = (id) => {
+    return request({
+        url: 'https://news-at.zhihu.com/api/4/theme/' + id,
+    });
+}
+
 export default api;

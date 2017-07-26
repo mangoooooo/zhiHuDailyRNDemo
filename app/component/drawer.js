@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import {
+    DeviceEventEmitter
+} from 'react-native';
+
 import DrawerList from './drawerList.js';
 
 export default class Drawer extends Component {
@@ -13,7 +17,7 @@ export default class Drawer extends Component {
 
     goTheme(item) {
         const { navigate } = this.props.navigation;
-        navigate('NewsDetail', { id: item.id })
+        DeviceEventEmitter.emit('Drawer', item);
     }
 
     render() {
