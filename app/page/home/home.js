@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     StyleSheet,
@@ -20,7 +20,7 @@ import NewsItem from './newsItem';
 const {width} = Dimensions.get('window');
 let iconfont = require('../../style/iconfont');
 
-export default class home extends Component {
+export default class home extends PureComponent {
 
     static navigationOptions = ({ navigation }) => {
         const {state, setParams} = navigation;
@@ -62,6 +62,7 @@ export default class home extends Component {
 
        this.state = {
          isLoading: false,
+         isRequesting: false,
          items: [],
          imageList: [],
          themeInfo: null,
@@ -86,7 +87,7 @@ export default class home extends Component {
                                 this.selectTheme(item)
                            });
 
-        this.fetchList(this.state.currentTheme)
+        this.loadFirstPage(this.state.currentTheme)
     }
     componentWillUpdate(nextProps, nextState) {
         console.log('componentWillUpdate')
@@ -101,10 +102,10 @@ export default class home extends Component {
     componentWillReceiveProps(nextProps) {
         console.log('componentWillReceiveProps')
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('shouldComponentUpdate')
-        return true
-    }
+//    shouldComponentUpdate(nextProps, nextState) {     //  PureComponent 不能有
+//        console.log('shouldComponentUpdate')
+//        return true
+//    }
 
     selectTheme(item) {
         this.setState({
@@ -117,19 +118,24 @@ export default class home extends Component {
             theme: item
         });
 
-        this.fetchList(item)
+        this.loadFirstPage(item)
     }
 
-    fetchList(theme) {
+    loadFirstPage (item) {
         this.setState({
             isLoading: true,
             items: []
         })
 
+        this.fetchList(item)
+    }
+
+    fetchList(theme) {
         if (theme.id == 0) {    //  首页
             api.getHomeLatest().then(data => {
                 this.setState({
                     isLoading: false,
+                    isRequesting: false,
                     imageList: data.top_stories || [],
                     items: data.stories || [],
                 })
@@ -138,6 +144,7 @@ export default class home extends Component {
             api.getThemeDetail(theme.id).then(data => {
                 this.setState({
                     isLoading: false,
+                    isRequesting: false,
                     items: data.stories || [],
                     themeInfo: data
                 })
@@ -155,6 +162,75 @@ export default class home extends Component {
     _renderItem = ({item}) => {
         return (<NewsItem item={item} onTap={() => {this.goDetail(item)}} />)
     }
+
+    _onRefresh = () => {
+        this.setState({
+            isRequesting: true,
+        })
+
+        this.fetchList(this.state.currentTheme)
+    }
+
+    _onEndReached = () => {
+        alert('加载下一页')
+    };
+
+    _keyExtractor = (item, index) => {
+        console.log(item)
+        return item.id
+    }
+
+    _HomeHeader = () => {
+        return (
+            <View>
+                <Swiper style={[styles.swiper]}
+                        showsButtons={true}
+                        width={width}
+                        height={0.65 * width}
+                        paginationStyle={{bottom: 10}}
+                        dot={<View style={[styles.dot]} />}
+                        activeDot={<View style={[styles.dot, styles.activedot]} />}
+                        nextButton={<Text></Text>}
+                        prevButton={<Text></Text>}>
+                        {
+                            this.state.imageList.map((item, i) =>
+                                <View style={[styles.wrapper]} key={i}>
+                                    <TouchableOpacity onPress={() => {this.goDetail(item)}} activeOpacity={1}>
+                                        <Image source={{uri: item.image}} style={[styles.image]} />
+                                        <View style={styles.titleWrap}>
+                                            <Text style={styles.title}>{item.title}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }
+                </Swiper>
+                <Text style={[styles.grouptitle]}>今日热闻</Text>
+            </View>
+        )
+    }
+
+    _ThemeHeader = () => {
+        return (
+            <View>
+                <View style={[{height: 0.65 * width, width: width, position: 'relative'}]}>
+                    <Image source={{uri: this.state.themeInfo.background}} style={[styles.image]} />
+                    <View style={styles.titleWrap}>
+                        <Text style={styles.title}>{this.state.themeInfo.description}</Text>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row', padding: 15, alignItems: 'center'}}>
+                    <Text>主编</Text>
+                    {
+                        this.state.themeInfo.editors.map(item =>
+                            <Image source={{uri: item.avatar}} style={[styles.avatar]} />
+                        )
+                    }
+                </View>
+            </View>
+        )
+    }
+
 
     openMenu = () => {
         this.props.navigation.navigate('DrawerOpen')
@@ -178,58 +254,27 @@ export default class home extends Component {
                 <Text>正在加载...</Text>
             </View>) : this.state.currentTheme.id == 0 ?
             (<View style={[styles.background, styles.wrapper]}>
-                <ScrollView>
-                    <Swiper style={[styles.swiper]}
-                            showsButtons={true}
-                            width={width}
-                            height={0.65 * width}
-                            paginationStyle={{bottom: 10}}
-                            dot={<View style={[styles.dot]} />}
-                            activeDot={<View style={[styles.dot, styles.activedot]} />}
-                            nextButton={<Text></Text>}
-                            prevButton={<Text></Text>}>
-                            {
-                                this.state.imageList.map((item, i) =>
-                                    <View style={[styles.wrapper]} key={i}>
-                                        <TouchableOpacity onPress={() => {this.goDetail(item)}} activeOpacity={1}>
-                                            <Image source={{uri: item.image}} style={[styles.image]} />
-                                            <View style={styles.titleWrap}>
-                                                <Text style={styles.title}>{item.title}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )
-                            }
-                    </Swiper>
-                    <Text style={[styles.grouptitle]}>今日热闻</Text>
                     <FlatList
-                      data={this.state.items}
-                      renderItem={this._renderItem}
+                        data={this.state.items}
+                        renderItem={this._renderItem}
+                        onRefresh={this._onRefresh}
+                        onEndReached={this._onEndReached}
+                        refreshing={this.state.isRequesting}
+                        keyExtractor={this._keyExtractor}
+                        ListHeaderComponent={this._HomeHeader}
+                        onEndReachedThreshold={0.25}
                     />
-                </ScrollView>
             </View>) :
             (<View style={[styles.background, styles.wrapper]}>
-                <ScrollView>
-                    <View style={[{height: 0.65 * width, width: width, position: 'relative'}]}>
-                        <Image source={{uri: this.state.themeInfo.background}} style={[styles.image]} />
-                        <View style={styles.titleWrap}>
-                            <Text style={styles.title}>{this.state.themeInfo.description}</Text>
-                        </View>
-                    </View>
-                    <View style={{flexDirection: 'row', padding: 15, alignItems: 'center'}}>
-                        <Text>主编</Text>
-                        {
-                            this.state.themeInfo.editors.map(item =>
-                                <Image source={{uri: item.avatar}} style={[styles.avatar]} />
-                            )
-                        }
-                    </View>
-
                     <FlatList
                       data={this.state.items}
                       renderItem={this._renderItem}
+                      onRefresh={this._onRefresh}
+                      onEndReached={this._onEndReached}
+                      refreshing={this.state.isRequesting}
+                      keyExtractor={this._keyExtractor}
+                      ListHeaderComponent={this._ThemeHeader}
                     />
-                </ScrollView>
             </View>);
 
         return content;

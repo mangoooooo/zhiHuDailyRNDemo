@@ -41,3 +41,10 @@
     组件A: DeviceEventEmitter.emit(actionName, data);
     组件B: componentDidMount中：this.msgListener = DeviceEventEmitter.addListener(actionName, (data) => {})
            componentWillUnmount中：this.msgListener && this.msgListener.remove();
+
+#8. FlatList
+    1)  getItemLayout对性能优化来说很重要
+        getItemLayout={(data, index) => (
+          // 120 是被渲染 item 的高度 ITEM_HEIGHT。
+          {length: 120, offset: 120 * index, index}
+        )}
