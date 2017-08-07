@@ -176,7 +176,6 @@ export default class home extends PureComponent {
     };
 
     _keyExtractor = (item, index) => {
-        console.log(item)
         return item.id
     }
 

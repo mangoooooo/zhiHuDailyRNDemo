@@ -5,6 +5,9 @@ todo:
     3.  评论
 
 二、  首页
-    1.  下拉刷新，加载下一页
     2.  navigation标题根据热闻的时间变
     3.  navigation
+
+三、  redux
+
+四、  主题

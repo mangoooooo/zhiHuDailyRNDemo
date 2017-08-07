@@ -8,6 +8,7 @@ import {
     ScrollView,
     WebView,
     Modal,
+    TouchableOpacity,
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -15,13 +16,38 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import api from '../../api';
 import util from '../../util';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
+let iconfont = require('../../style/iconfont');
 
 export default class newsDetail extends Component {
     webview = null;
 
-    static navigationOptions = {
-        title: '详情',
+    static navigationOptions = ({ navigation }) => {
+        const {state, setParams} = navigation;
+        if(!state.params){
+            state.params = {};
+        }
+
+        return {
+            title: '',
+            headerStyle: {backgroundColor: '#00a2ed'},
+            headerTintColor : '#ffffff',
+            headerRight:
+                (<View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={state.params.viewMessage} activeOpacity={1}>
+                        <Text style={styles.icomoon}>&#xea82;</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                        <Text style={styles.icomoon}>&#xe9d9;</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                        <Text style={styles.icomoon}>&#xe96d;</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                        <Text style={styles.icomoon}>&#xea03;</Text>
+                    </TouchableOpacity>
+                </View>)
+        };
     };
 
     constructor(props){
@@ -35,8 +61,25 @@ export default class newsDetail extends Component {
        }
     }
 
+    componentWillMount() {
+        const { setParams, state } = this.props.navigation;
+
+        setParams({
+            viewMessage: this.viewMessage,
+            viewMore: this.viewMore,
+        });
+    }
+
     componentDidMount() {
         this.fetchDetail()
+    }
+
+    viewMessage = () => {
+            alert('ss');
+        }
+
+    viewMore = () => {
+        alert('more');
     }
 
     fetchDetail() {
@@ -109,10 +152,6 @@ export default class newsDetail extends Component {
         this.setState({modalShow: visible});
     }
 
-    onWebViewScroll () {
-        alert('aaa')
-    }
-
     render() {
         let content = '';
         if (this.state.isLoading) {
@@ -171,6 +210,9 @@ const styles = StyleSheet.create({
     },
     background: {
         backgroundColor: '#f3f3f3',
+    },
+    icomoon: {
+        ...iconfont.iconfont,
     },
 
     wrapper: {
