@@ -34,16 +34,16 @@ export default class newsDetail extends Component {
             headerTintColor : '#ffffff',
             headerRight:
                 (<View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={state.params.viewMessage} activeOpacity={1}>
+                    <TouchableOpacity onPress={state.params.share} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xea82;</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                    <TouchableOpacity onPress={state.params.favorite} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xe9d9;</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                    <TouchableOpacity onPress={state.params.comment} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xe96d;</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={state.params.viewMore} activeOpacity={1}>
+                    <TouchableOpacity onPress={state.params.appreciate} activeOpacity={1}>
                         <Text style={styles.icomoon}>&#xea03;</Text>
                     </TouchableOpacity>
                 </View>)
@@ -65,8 +65,10 @@ export default class newsDetail extends Component {
         const { setParams, state } = this.props.navigation;
 
         setParams({
-            viewMessage: this.viewMessage,
-            viewMore: this.viewMore,
+            share: this.share,
+            favorite: this.favorite,
+            comment: this.comment,
+            appreciate: this.appreciate,
         });
     }
 
@@ -74,11 +76,19 @@ export default class newsDetail extends Component {
         this.fetchDetail()
     }
 
-    viewMessage = () => {
+    share = () => {
             alert('ss');
         }
 
-    viewMore = () => {
+    favorite = () => {
+        alert('more');
+    }
+
+    comment = () => {
+        alert('ss');
+    }
+
+    appreciate = () => {
         alert('more');
     }
 

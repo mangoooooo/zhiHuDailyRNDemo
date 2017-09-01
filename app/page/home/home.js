@@ -172,7 +172,10 @@ export default class home extends PureComponent {
     }
 
     _onEndReached = () => {
-        alert('加载下一页')
+        let datatime = ''
+        api.getHomeBefore(datatime).then(data => {
+
+        })
     };
 
     _keyExtractor = (item, index) => {

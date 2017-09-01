@@ -20,6 +20,12 @@ api.getHomeLatest = () => {
     });
 }
 
+api.getHomeBefore = (datetime) => {
+    return request({
+        url: 'https://news-at.zhihu.com/api/4/news/before/' + datetime
+    });
+}
+
 api.getDetail = (id) => {
     return request({
         url: 'https://news-at.zhihu.com/api/4/news/' + id,
